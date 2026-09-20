@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Celestial Wheel</title>
+<style>
+  :root {
+    --ink: #e7e1d3;
+    --ink-dim: #6f6a60;
+    --zhu: #d9483f;
+    --hair: rgba(242, 237, 224, .16);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    background: #050505; color: var(--ink);
+    font-family: "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  }
+
+  /* 周天铺满整个视口，作为底景 */
+  #wheel { position: fixed; inset: 0; }
+  #wheel canvas { display: block; width: 100%; height: 100%; }
+
+  /* 左侧代码打字机。淡化比原先轻很多：只在最下方收一点，上方保持可读 */
+  #code {
+    position: fixed; left: 24px; top: 64px;
+    width: min(42vw, 580px); height: 62vh;
+    margin: 0; padding: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px; line-height: 1.65;
+    color: rgba(231, 225, 211, .62);
+    white-space: pre; overflow: hidden;
+    pointer-events: none; user-select: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+  }
+
+  header {
+    position: fixed; left: 24px; top: 20px; z-index: 2;
+    font-size: 11px; letter-spacing: .32em; color: var(--ink-dim);
+  }
+  header b {
+    display: block; margin-bottom: 4px;
+    font-size: 17px; letter-spacing: .3em; color: var(--ink); font-weight: 500;
+  }
+
+  /* 悬停某个字格时，右下角给出它是什么 */
+  #tip {
+    position: fixed; right: 24px; bottom: 24px; max-width: 42vw;
+    text-align: right; font-size: 12px; line-height: 1.8;
+    color: var(--ink-dim); opacity: 0; transition: opacity .25s;
+  }
+  #tip.on { opacity: 1; }
+  #tip b { color: var(--ink); font-size: 15px; letter-spacing: .1em; }
+
+  footer {
+    position: fixed; right: 24px; top: 22px;
+    font-size: 10px; letter-spacing: .22em; color: var(--ink-dim);
+  }
+  footer a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--hair); }
+  footer a:hover { color: var(--ink); }
+
+  @media (max-width: 760px) { #code { display: none; } }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="wheel"></div>
+<pre id="code"></pre>
+<header><b>CELESTIAL WHEEL</b>周 天 · 十 二 重</header>
+<footer><a href="https://github.com/zaoxu001/celestial-wheel">GitHub</a></footer>
+<div id="tip"></div>
+
+<script type="module">
+import { createCelestialWheel } from './src/celestial-wheel.js'
+import { createCodeTicker, fetchLines, toLines } from './src/code-ticker.js'
+
+// 一、周天
+const tip = document.getElementById('tip')
+let hideTip = 0
+const wheel = createCelestialWheel(document.getElementById('wheel'), {
+  onFocus(info) {
+    clearTimeout(hideTip)
+    if (!info) { tip.classList.remove('on'); return }
+    tip.innerHTML = `<b>${info.label ?? ''}</b><br>${info.text ?? info.ring ?? ''}`
+    tip.classList.add('on')
+    hideTip = setTimeout(() => tip.classList.remove('on'), 4000)
+  },
+})
+wheel.setMode('landing')
+
+// 二、打字机。素材就是这个特效自己的源码，所以页面在放什么，左边就在打什么。
+const FALLBACK = toLines(`// 取不到源码时的兜底：直接打这一段。
+// 想看真正的源码，用 http 打开本页而不是双击文件，
+// file:// 下浏览器不允许 fetch 同目录的文件。
+const rings = RINGS.map((r) => ({ ...r, angle: Math.random() * TAU }))
+for (const ring of rings) ring.group.rotation.z = ring.angle`)
+
+const files = ['./src/celestial-wheel.js', './src/code-ticker.js', './src/data.js']
+const loaded = await Promise.all(files.map(fetchLines))
+const lines = loaded.filter(Boolean).flat()
+
+createCodeTicker(document.getElementById('code'), {
+  lines: lines.length ? lines : FALLBACK,
+  cps: 55,
+})
+</script>
+</body>
+</html>

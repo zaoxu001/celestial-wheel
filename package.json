@@ -1,0 +1,32 @@
+{
+  "name": "celestial-wheel",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Twelve concentric rings of Chinese cosmological glyphs, rendered in three.js. No images.",
+  "main": "src/celestial-wheel.js",
+  "exports": {
+    ".": "./src/celestial-wheel.js",
+    "./ticker": "./src/code-ticker.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "threejs",
+    "webgl",
+    "generative",
+    "chinese",
+    "astronomy",
+    "typewriter"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "three": ">=0.160.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zaoxu001/celestial-wheel.git"
+  }
+}
