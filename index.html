@@ -33,8 +33,13 @@
     color: rgba(231, 225, 211, .42);
     white-space: pre; overflow: hidden;
     pointer-events: none; user-select: none;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+    /* 两道渐变叠在一起取交集：顶部收旧行滚出去的那一端，右侧收长行被截断的那一端 */
+    --fade-top: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+    --fade-right: linear-gradient(to right, #000 0%, #000 82%, transparent 100%);
+    -webkit-mask-image: var(--fade-top), var(--fade-right);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--fade-top), var(--fade-right);
+    mask-composite: intersect;
   }
 
   header {
@@ -112,7 +117,7 @@ const lines = loaded.filter(Boolean).flat()
 
 createCodeTicker(document.getElementById('code'), {
   lines: lines.length ? lines : FALLBACK,
-  cps: 55,
+  cps: 110,
 })
 </script>
 </body>
