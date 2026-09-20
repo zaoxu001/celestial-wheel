@@ -22,7 +22,8 @@
   #wheel { position: fixed; inset: 0; }
   #wheel canvas { display: block; width: 100%; height: 100%; }
 
-  /* 左侧代码打字机。淡化比原先轻很多：只在最下方收一点，上方保持可读 */
+  /* 左侧代码打字机。渐变放在顶部：旧行是从上面滚走的，那一端才需要柔化；
+     正在打的那一行和光标在最底下，必须是最清楚的。 */
   #code {
     position: fixed; left: 24px; top: 64px;
     width: min(42vw, 580px); height: 62vh;
@@ -32,8 +33,8 @@
     color: rgba(231, 225, 211, .42);
     white-space: pre; overflow: hidden;
     pointer-events: none; user-select: none;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
   }
 
   header {
