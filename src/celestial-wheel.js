@@ -127,7 +127,9 @@ export function createCelestialWheel(host, { onFocus } = {}) {
     world.rotation.x = (py * .3) * k * tiltOn; world.rotation.z = (px * .25) * k * tiltOn
     world.scale.setScalar(breath)
     // 相机
-    if (focus) { const R = focus.userData.ring; const want = Math.PI / 2 - focus.userData.a; R.angle += wrap(want - R.angle) * .12; R.cur = 0; const r = R.r * (1 + R.boost) * breath; camLook.set(0, 0, r - .2); camPos.set(0, 2.6, r + 3.1) }
+    // rotateY(θ) 把布局角 a 的点送到 a-θ，要落在正对镜头的 π/2，就得 θ = a-π/2。
+    // 写成 π/2-a 会送到 2a-π/2，正是以正前方为轴的镜像位置——只有 a=π/2 那一格碰巧正确。
+    if (focus) { const R = focus.userData.ring; const want = focus.userData.a - Math.PI / 2; R.angle += wrap(want - R.angle) * .12; R.cur = 0; const r = R.r * (1 + R.boost) * breath; camLook.set(0, 0, r - .2); camPos.set(0, 2.6, r + 3.1) }
     else if (landing) { const o = now * .07; camPos.set(Math.sin(o) * 9.8 * k * zoom, (14 * (1 - k) + (3.4 + Math.sin(now * .11) * 1.6) * k) * zoom, (.001 * (1 - k) + Math.cos(o) * 9.8 * k) * zoom); camLook.set(0, 0, 0) }
     else { const o = now * .05; camPos.set(-4.8 + Math.sin(o) * 1.2, 4.2, 9.5 + Math.cos(o) * .6); camLook.set(-3.8, .2, 0) } // calm：盘偏右，左侧留白
     camera.position.lerp(camPos, focus ? .06 : landing ? .1 : .05); camera.lookAt(camLook)
