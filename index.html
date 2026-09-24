@@ -96,8 +96,11 @@ let hideTip = 0
 const wheel = createCelestialWheel(document.getElementById('wheel'), {
   onFocus(info) {
     clearTimeout(hideTip)
-    if (!info) { tip.classList.remove('on'); return }
-    tip.innerHTML = `<b>${info.label ?? ''}</b><br>${info.text ?? info.ring ?? ''}`
+    // 回调发的是 { type, cell }：type 为 'hover' / 'focus' / 'leave'，
+    // 字格的内容在 cell 里。离开字格时 type 仍是 'hover'，但 cell 为 null。
+    const cell = info && info.cell
+    if (!cell) { tip.classList.remove('on'); return }
+    tip.innerHTML = `<b>${cell.label ?? ''}</b><br>${cell.text ?? cell.ring ?? ''}`
     tip.classList.add('on')
     hideTip = setTimeout(() => tip.classList.remove('on'), 4000)
   },

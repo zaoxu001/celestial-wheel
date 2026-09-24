@@ -29,8 +29,9 @@ import { createCelestialWheel } from './src/celestial-wheel.js'
 
 const wheel = createCelestialWheel(document.querySelector('#host'), {
   onFocus(info) {
-    // 鼠标停在某个字格上时触发，离开时 info 为 null
-    console.log(info?.label, info?.text)
+    // info.type：'hover' 鼠标经过 · 'focus' 点中 · 'leave' 取消聚焦
+    // info.cell：字格内容 { label, ring, index, total, text }；离开字格时为 null
+    if (info.cell) console.log(info.cell.label, info.cell.text)
   },
 })
 
