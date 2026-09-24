@@ -83,6 +83,8 @@ createCodeTicker(document.querySelector('pre'), {
 
 **[tianzhi-core](https://github.com/zaoxu001/tianzhi-core)** · 东方术数的核心算法，MIT 许可。以典籍为据，把可推算的部分还原成可检验的算法：历法与真太阳时、干支五行关系、排盘、力量量化、旺衰分档、调候取用、月令格局、岁运引动、合盘，返回结构化数据与术语标签。
 
+**[tianzhi-classics](https://github.com/zaoxu001/tianzhi-classics)** · 算法所依据的典籍原文。只收公有领域的版本，现代点校本与白话译注不在其列。算法输出里的出处标签（如「穷通宝鉴·辛日午月」「子平真诠·论用神」）逐条指回这里的原文，让结论可以回溯查证。
+
 ## 许可
 
 MIT。数据部分是八卦、干支、节气、星宿这类公共领域的典籍常识。
